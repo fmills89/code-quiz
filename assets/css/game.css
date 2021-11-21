@@ -23,8 +23,5 @@
 
 .choice-text {
     padding: 1.5rem;
-}
-
-.choice-text:hover {
-    color: white;
+    width: 100%;
 }
