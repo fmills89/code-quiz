@@ -10,7 +10,7 @@
 .choice-prefix {
     padding: 1.5rem 2.5rem;
     background-color: #886EFF;
-    color: white;
+    color: #333;
 }
 
 .choice-container:hover {
@@ -24,4 +24,33 @@
 .choice-text {
     padding: 1.5rem;
     width: 100%;
+}
+
+.correct {
+    background-color: greenyellow;
+}
+
+.incorrect {
+    background-color: red;
+}
+
+#header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.highscore-main-text {
+    font-size: 2rem;
+}
+
+#countdown {
+    font-size: 2rem;
+    text-align: center;
+}
+
+#text-prefix {
+    text-align: center;
+    font-size: 1rem;
+    padding: 0.5rem;
 }

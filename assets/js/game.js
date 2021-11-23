@@ -1,6 +1,7 @@
 const question = document.getElementById("question");
 const choices = Array.from(document.getElementsByClassName("choice-text"));
-console.log(choices);
+const timerText = document.getElementById('countdown');
+
 
 
 let currentQuestion = {};
@@ -11,6 +12,9 @@ let score = 0;
 let questionCounter = 0;
 // taking questions out of array
 let availableQuestions = [];
+let timeMin = 75;
+
+timerText.innerHTML = timeMin;
 
 let questions = [
 
@@ -43,7 +47,7 @@ let questions = [
         choice1: "display: flex;",
         choice2: "display: flexbox;",
         choice3: "display: box;",
-        choice4:"display: grid;",
+        choice4: "display: grid;",
         answer: 1
     },
     {
@@ -57,8 +61,9 @@ let questions = [
 ];
 
 
-//contants
+
 const correctPoints = 10;
+var questionNum = 5;
 
 var startGame = function() {
     // making sure counter is 0
@@ -67,8 +72,20 @@ var startGame = function() {
     // copying in all questions from Q array - new array using spread operator
     availableQuestions = [...questions];
     console.log(availableQuestions);
+    startTimer();
     getNewQuestion();
 
+};
+
+var startTimer = function() {
+    const countdown = setInterval(() => {
+        timeMin--;
+        timerText.innerHTML = timeMin;
+        if (timeMin === 0) {
+        clearInterval(countdown);
+        getNewQuestion();
+        }
+    }, 1000);
 };
 
 var getNewQuestion = function() {
@@ -97,15 +114,48 @@ var getNewQuestion = function() {
 choices.forEach (function (choice){
     choice.addEventListener('click', function(event) {
         // click and get references to choice num
-        console.log(event.target);
+        //console.log(event.target);
 
-        if (!acceptingAnswers) return;
+        //if (!acceptingAnswers) return;
 
-        acceptingAnswers = false;
+        //acceptingAnswers = false;
         const selectedChoice = event.target;
         const selectedAnswer = selectedChoice.dataset["number"];
-        console.log(selectedAnswer);
+
+        if (selectedAnswer == currentQuestion.answer) {
+            error.innerHTML = "<span style ='color': black;>"+"<hr>Correct!</hr></span>"
+            score = score + 10;
+        } else {
+            error.innerHTML = "<span style ='color': black;>"+"<hr>Incorrect!</hr></span>"
+            timerMin = timerMin - 10;
+        };
+
         getNewQuestion();
+        
+        /*let classToApply = '';
+
+        // setting classToApply as incorrect unless answer is correct - therefore given class 'correct'
+            if (selectedAnswer == currentQuestion.answer) {
+                classToApply = 'correct';
+                //score = score + 10;
+            } else {
+                classToApply = 'incorrect';
+                timerText = timerText - 10;
+            }
+        
+        // adding classList .correct to 'correct'
+        selectedChoice.parentElement.classList.add(classToApply);
+
+        // using ES6 arrow syntax
+        setTimeout(() => {
+            // adding classList .incorrect to 'incorrect
+            selectedChoice.parentElement.classList.remove(classToApply);
+            //calling get new question
+            getNewQuestion();
+            //time interval before transition 1sec
+        }, 1000);
+      
+        console.log(classToApply);*/
     });
 });
 
