@@ -1,22 +1,18 @@
-const question = document.getElementById("question");
-const choices = Array.from(document.getElementsByClassName("choice-text"));
-const timerText = document.getElementById('countdown');
+var question = document.getElementById("question");
+var choices = Array.from(document.getElementsByClassName("choice-text"));
+var timerElement = document.getElementById('countdown');
 
 
 
-let currentQuestion = {};
-let acceptingAnswers = false;
-// starting score at 0
-let score = 0;
-// what question are you on
-let questionCounter = 0;
-// taking questions out of array
-let availableQuestions = [];
-let timeMin = 75;
+var currentQuestion = {};
+var score = 0;
+var questionCounter = 0;
+var availableQuestions = [];
+var timer;
+var timerCount;
 
-timerText.innerHTML = timeMin;
 
-let questions = [
+var questions = [
 
     {
         question: "We are currently on the develop branch. Which of the following commands does NOT switch to a new branch?",
@@ -60,102 +56,73 @@ let questions = [
     }
 ];
 
-
-
-const correctPoints = 10;
+var points = 10;
 var questionNum = 5;
 
-var startGame = function() {
-    // making sure counter is 0
+
+function startGame() {
     questionCounter = 0;
     score = 0;
-    // copying in all questions from Q array - new array using spread operator
+    timerCount = 75
     availableQuestions = [...questions];
     console.log(availableQuestions);
     startTimer();
     getNewQuestion();
-
 };
 
-var startTimer = function() {
-    const countdown = setInterval(() => {
-        timeMin--;
-        timerText.innerHTML = timeMin;
-        if (timeMin === 0) {
-        clearInterval(countdown);
-        getNewQuestion();
+function startTimer() {
+    timer = setInterval(function() {
+        timerCount--;
+        timerElement.textContent = timerCount;
+        if (timerCount === 0) {
+            clearInterval(timer);
+            getNewQuestion();
         }
     }, 1000);
-};
+}
 
-var getNewQuestion = function() {
-
-    if(availableQuestions.length === 0) {
-        // once questions are 0 or max questions
-        return window.location.assign("/end.html");
+function getNewQuestion () {
+    if(availableQuestions.length == 0 || questionCounter >= questionNum) {
+        clearInterval(timer);
+        return window.location.assign("/end.html")
     }
-    // when starting game will increment to 1
+
     questionCounter++;
-    // basing on length of array
-    const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+    var questionIndex = Math.floor(Math.random() * availableQuestions.length);
     currentQuestion = availableQuestions[questionIndex];
     question.innerText = currentQuestion.question;
 
-    choices.forEach (function (choice) {
-        const number = choice.dataset['number'];
-        choice.innerText = currentQuestion["choice" + number];
+    choices.forEach(choice => {
+        var number = choice.dataset["number"];
+        choice.innerText = currentQuestion["choice" + number]
     });
-    // take avail questions array and getting rid of questions we already used
-    availableQuestions.splice(questionIndex, 1);
 
-    acceptingAnswers = true;
+    availableQuestions.splice(questionIndex,1);
 };
 
-choices.forEach (function (choice){
-    choice.addEventListener('click', function(event) {
-        // click and get references to choice num
-        //console.log(event.target);
+document.addEventListener("click", function(event) {
+    if (timerCount === 0) {
+        return;
+    }
+});
 
-        //if (!acceptingAnswers) return;
-
-        //acceptingAnswers = false;
-        const selectedChoice = event.target;
-        const selectedAnswer = selectedChoice.dataset["number"];
+choices.forEach(choice => {
+    choice.addEventListener("click", event => {
+        var selectedChoice = event.target;
+        var selectedAnswer = selectedChoice.dataset["number"];
 
         if (selectedAnswer == currentQuestion.answer) {
-            error.innerHTML = "<span style ='color': black;>"+"<hr>Correct!</hr></span>"
+            error.innerHTML = "<span style ='color: purple;'>"+ "<hr>Correct!</hr></span>"
             score = score + 10;
+            localStorage.setItem('mostRecentScore', score);
         } else {
-            error.innerHTML = "<span style ='color': black;>"+"<hr>Incorrect!</hr></span>"
-            timerMin = timerMin - 10;
+            error.innerHTML = "<span style='color: purple;'>"+ "<hr>Incorrect!</hr></span>"
+            timerCount = timerCount - 10;
+            score = score - 10;
+            localStorage.setItem('mostRecentScore', score);
         };
 
         getNewQuestion();
-        
-        /*let classToApply = '';
-
-        // setting classToApply as incorrect unless answer is correct - therefore given class 'correct'
-            if (selectedAnswer == currentQuestion.answer) {
-                classToApply = 'correct';
-                //score = score + 10;
-            } else {
-                classToApply = 'incorrect';
-                timerText = timerText - 10;
-            }
-        
-        // adding classList .correct to 'correct'
-        selectedChoice.parentElement.classList.add(classToApply);
-
-        // using ES6 arrow syntax
-        setTimeout(() => {
-            // adding classList .incorrect to 'incorrect
-            selectedChoice.parentElement.classList.remove(classToApply);
-            //calling get new question
-            getNewQuestion();
-            //time interval before transition 1sec
-        }, 1000);
-      
-        console.log(classToApply);*/
     });
 });
 
