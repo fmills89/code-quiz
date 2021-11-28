@@ -84,7 +84,7 @@ function startTimer() {
 function getNewQuestion () {
     if(availableQuestions.length == 0 || questionCounter >= questionNum || timerCount === 0) {
         clearInterval(timer);
-        return window.location.assign("/end.html");
+        return window.location.assign("/assets/end.html");
     }
 
     questionCounter++;
