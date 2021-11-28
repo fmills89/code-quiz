@@ -84,7 +84,7 @@ function startTimer() {
 function getNewQuestion () {
     if(availableQuestions.length == 0 || questionCounter >= questionNum || timerCount === 0) {
         clearInterval(timer);
-        return window.location.href= "./end.html";
+        return window.location.href= "end.html";
     }
 
     questionCounter++;
